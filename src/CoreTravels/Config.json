@@ -1,0 +1,12 @@
+﻿{
+  "MailSettings": {
+    "ToAddress": "travel@TravelCore.com"
+  },
+  "ConnectionStrings": {
+    "CoreTravelsConnection": "Data Source=DESKTOP-S7M7J6V\\SQL2014;Initial Catalog=CoreTravelsDB;Integrated Security=True"
+  },
+  "Keys": {
+    "GeoCodingApiKey": "AIzaSyBP12XhHVgXbH3fLTr5sknpn-ZvQDwiIgE"
+  }
+
+}

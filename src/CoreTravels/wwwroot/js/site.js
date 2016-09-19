@@ -1,4 +1,4 @@
-﻿(function (){
+﻿(function () {
     //var txtUsername = $("#username");
     //txtUsername.text("Maxwell54");
 
@@ -17,8 +17,17 @@
     //})
 
     var $sideBarContent = $("#sidebar,#content");
+    var $icon = $("#sideBarToggle i.fa");
 
     $("#sideBarToggle").on("click", function () {
         $sideBarContent.toggleClass("hide-sidebar");
-    })    
+        if ($sideBarContent.hasClass("hide-sidebar")) {
+            $icon.removeClass("fa-angle-left");
+            $icon.addClass("fa-angle-right");
+        }
+        else {
+            $icon.addClass("fa-angle-left");
+            $icon.removeClass("fa-angle-right");
+        }
+    })
 })();

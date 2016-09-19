@@ -1,23 +1,25 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CoreTravels.Services
+﻿namespace CoreTravels.Services
 {
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Logging;
+    using Newtonsoft.Json.Linq;
+    using System;
+    using System.Net;
+    using System.Net.Http;
+    using System.Threading.Tasks;
+
     public class GeoCoordService
     {
+        private IConfigurationRoot _config;
         private ILogger<GeoCoordService> _logger;
 
-        public GeoCoordService(ILogger<GeoCoordService> logger)
+        public GeoCoordService(ILogger<GeoCoordService> logger, IConfigurationRoot config)
         {
             _logger = logger;
+            _config = config;
         }
         
-        public GeoCoordsResult GetCoords(string name)
+        public async Task<GeoCoordsResult> GetCoords(string name)
         {
             var result = new GeoCoordsResult
             {
@@ -25,9 +27,33 @@ namespace CoreTravels.Services
                 Message = "Failed to get coordinates"
             };
 
-            var apiKey = string.Empty;
+            var apiKey = "AIzaSyBP12XhHVgXbH3fLTr5sknpn-ZvQDwiIgE";
             var encodedName = WebUtility.UrlEncode(name);
-            var url = $"http://dev.virtualearth.net/REST/v1/Locations?q={encodedName}&key={apiKey}";
+            var url = $"https://maps.googleapis.com/maps/api/geocode/json?address={encodedName}&key={apiKey}";
+
+            var client = new HttpClient();
+            var json = await client.GetStringAsync(url);
+
+            try
+            {
+                JObject jObj = JObject.Parse(json);
+
+                JArray results = jObj["results"] as JArray;
+
+                JToken firstResult = results.First;
+                JToken location = firstResult["geometry"]["location"];
+
+                result.Latitude = Convert.ToDouble(location["lat"].ToString());
+                result.Longitude = Convert.ToDouble(location["lng"].ToString());
+                result.Success = true;
+                result.Message = "Success";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+            }
+
+            return result;
         }
     }
 }

@@ -1,11 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace CoreTravels.Models
+﻿namespace CoreTravels.Models
 {
+    using Microsoft.EntityFrameworkCore;
+    using System.Collections.Generic;
+    using System.Linq;
+
     public class CoreTravelsRepository : ICoreTravelsRepository
     {
         private ICoreTravelsContext _context;
@@ -15,11 +13,11 @@ namespace CoreTravels.Models
             _context = context;
         }
 
-        public void AddStop(string tripName, Stop stop)
+        public void AddStop(int idTrip, Stop stop)
         {
-            var trip = GetTripByName(tripName);
+            var trip = GetTripById(idTrip);
 
-            if(tripName.Any())
+            if(trip != null)
             {
                 trip.Stops.Add(stop);
                 _context.Stops.Add(stop);
@@ -38,9 +36,9 @@ namespace CoreTravels.Models
             return _context.Trips.ToList();
         }
 
-        public Trip GetTripByName(string tripName)
+        public Trip GetTripById(int idTrip)
         {
-            return _context.Trips.Include(t => t.Stops).FirstOrDefault(x => x.Name == tripName);
+            return _context.Trips.Include(t => t.Stops).FirstOrDefault(x => x.Id == idTrip);
         }
 
         public bool SaveChanges()

@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace CoreTravels.Models
+﻿namespace CoreTravels.Models
 {
+    using System;
+
     public class Stop
     {
         public int Id { get; set; }

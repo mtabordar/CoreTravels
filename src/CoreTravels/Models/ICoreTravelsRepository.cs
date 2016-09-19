@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace CoreTravels.Models
+﻿namespace CoreTravels.Models
 {
+    using System.Collections.Generic;
+
     public interface ICoreTravelsRepository
     {
         IEnumerable<Trip> GetAllTrips();
@@ -10,8 +10,8 @@ namespace CoreTravels.Models
 
         bool SaveChanges();
 
-        Trip GetTripByName(string tripName);
+        Trip GetTripById(int id);
 
-        void AddStop(string tripName, Stop stop);
+        void AddStop(int idTrip, Stop stop);
     }
 }

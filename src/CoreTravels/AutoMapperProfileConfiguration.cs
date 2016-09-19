@@ -1,9 +1,9 @@
-﻿using AutoMapper;
-using CoreTravels.Models;
-using CoreTravels.ViewModels;
-
-namespace CoreTravels
+﻿namespace CoreTravels
 {
+    using AutoMapper;
+    using Models;
+    using ViewModels;
+
     public class AutoMapperProfileConfiguration : Profile
     {
         public AutoMapperProfileConfiguration()

@@ -1,36 +1,35 @@
-﻿using AutoMapper;
-using CoreTravels.Models;
-using CoreTravels.ViewModels;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CoreTravels.Controllers.Api
+﻿namespace CoreTravels.Controllers.Api
 {
-    [Route("/api/trips/{tripName}/stop")]
+    using AutoMapper;
+    using Models;
+    using Services;
+    using ViewModels;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
+    using System;
+
+    [Route("/api/trips/{idTrip}/stop")]
     public class StopsController : Controller
     {
+        private GeoCoordService _coordService;
         private ILogger<StopsController> _logger;
         private IMapper _mapper;
         private ICoreTravelsRepository _repository;
 
-        public StopsController(ICoreTravelsRepository repository, ILogger<StopsController> logger, IMapper mapper)
+        public StopsController(ICoreTravelsRepository repository, ILogger<StopsController> logger, IMapper mapper, GeoCoordService coordService)
         {
             _repository = repository;
             _logger = logger;
             _mapper = mapper;
+            _coordService = coordService;
         }
 
         [HttpGet]
-        public IActionResult Get(string tripName)
+        public IActionResult Get(int idTrip)
         {
             try
             {
-                var trip = _repository.GetTripByName(tripName);
+                var trip = _repository.GetTripById(idTrip);
 
                 return Ok(_mapper.Map<StopViewModel>(trip.Stops));
             }
@@ -41,7 +40,7 @@ namespace CoreTravels.Controllers.Api
             }
         }
 
-        public IActionResult Post(string tripName, [FromBody]StopViewModel vm)
+        public IActionResult Post(int idTrip, [FromBody]StopViewModel vm)
         {
             try
             {
@@ -49,9 +48,21 @@ namespace CoreTravels.Controllers.Api
                 {
                     var newStop = _mapper.Map<Stop>(vm);
 
-                    _repository.AddStop(tripName, newStop);
+                    var result = _coordService.GetCoords(newStop.Name);
 
-                    return Created($"/api/trips/{tripName}/stops/{newStop.Name}", _mapper.Map<StopViewModel>(newStop));
+                    if (result.Result.Success)
+                    {
+                        newStop.Latitude = result.Result.Latitude;
+                        newStop.Longitude = result.Result.Longitude;
+
+                        _repository.AddStop(idTrip, newStop);
+
+                        return Created($"/api/trips/{idTrip}/stops/{newStop.Id}", _mapper.Map<StopViewModel>(newStop));
+                    }
+                    else
+                    {
+                        _logger.LogError(result.Result.Message);
+                    }
                 }
 
                 return BadRequest(ModelState);

@@ -4,14 +4,10 @@ using CoreTravels.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace CoreTravels.Controllers.Api
 {
+    using System.Collections.Generic;
+
     public class TripsController : Controller
     {
         private ILogger<TripsController> _logger;
@@ -49,7 +45,7 @@ namespace CoreTravels.Controllers.Api
                     var newTrip = _mapper.Map<Trip>(trip);
 
                     _repository.AddTrip(newTrip);
-                    return Created($"api/Trips/{trip.Name}", trip);
+                    return Created($"api/Trips/{trip.Id}", trip);
                 }
 
                 return BadRequest(ModelState);

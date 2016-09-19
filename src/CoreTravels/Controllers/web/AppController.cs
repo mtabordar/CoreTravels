@@ -25,9 +25,15 @@ namespace CoreTravels.Controllers.web
         }
 
         public IActionResult Index()
+        {           
+            return View();
+        }
+
+        public IActionResult Trips()
         {
-            var data = _repostiory.Trips.ToList();
-            return View(data);
+            var trips = _repostiory.Trips.ToList();
+
+            return View(trips);
         }
 
         public IActionResult Contact()

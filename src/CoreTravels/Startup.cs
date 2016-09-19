@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using CoreTravels.Services;
-using Microsoft.Extensions.Configuration;
-using CoreTravels.Models;
-using Newtonsoft.Json.Serialization;
-using AutoMapper;
-
-namespace CoreTravels
+﻿namespace CoreTravels
 {
+    using AutoMapper;
+    using Models;
+    using Services;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
+    using Newtonsoft.Json.Serialization;
+
     public class Startup
     {
         private IHostingEnvironment _env;
@@ -41,6 +36,7 @@ namespace CoreTravels
 
             services.AddDbContext<ICoreTravelsContext>();
             services.AddScoped<ICoreTravelsRepository, CoreTravelsRepository>();
+            services.AddTransient<GeoCoordService>();
             services.AddTransient<CoreTravelsSeed>();
             services.AddMvc().AddJsonOptions(config =>
             {
